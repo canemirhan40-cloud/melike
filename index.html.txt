@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Melike'nin Günü</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom, #ffe6f0, #fff);
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .container, #message, #countdown, canvas {
+      display: none;
+    }
+
+    .login {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+
+    .login input {
+      padding: 10px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    .login button {
+      padding: 10px 20px;
+      margin-top: 15px;
+      background: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .countdown {
+      font-size: 2.5em;
+      font-weight: bold;
+      color: #ff1493;
+      background-color: white;
+      padding: 20px 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    .container {
+      max-width: 800px;
+      padding: 30px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+    }
+
+    h1 {
+      font-size: 3em;
+      color: #ff1493;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.2em;
+      color: #444;
+      line-height: 1.6;
+    }
+
+    footer {
+      margin-top: 20px;
+      font-style: italic;
+      color: #666;
+    }
+
+    .confetti {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login" id="loginBox">
+    <h2>🔐 Şifre Gerekli</h2>
+    <p>Melike'nin doğum günü sürprizi için lütfen şifreyi gir:</p>
+    <input type="password" id="passwordInput" placeholder="Şifre">
+    <br>
+    <button onclick="kontrolEt()">Giriş Yap</button>
+    <p id="error" style="color:red; display:none;">❌ Şifre yanlış, tekrar dene.</p>
+  </div>
+
+  <div id="countdown" class="countdown"></div>
+
+  <div id="message" class="container">
+    <h1>🎉 Doğum Günün Kutlu Olsun Melike 🎉</h1>
+    <p>
+      Bugün senin doğum günün. Belki her şey tam değil, belki hâlâ aramızda mesafeler var.
+      Ama bu özel gününde sana içten bir şey söylemek istedim.
+    </p>
+    <p>
+      Sana söylediğim o yalan… keşke hiç olmasaydı. Ama seninle yeniden konuşmak, gülmek, hatta susmak bile güzeldi.
+      Zaman istedin, ve ben bunu anlıyorum. Çünkü bazen en değerli şey, biraz beklemeyi bilmektir.
+    </p>
+    <p>
+      Bu sayfa, bir özür değil sadece. Bir teşekkür. Varlığın için, sabrın için, güzelliğin için.
+      Belki bir gün yeniden başlarız. Belki bu satırlar, o günün ilk adımı olur.
+    </p>
+    <p>
+      Doğum günün kutlu olsun Melike. Sen hep en iyisini hak ettin.
+    </p>
+    <footer>– Emirhan</footer>
+  </div>
+
+  <canvas class="confetti" id="confetti-canvas"></canvas>
+
+  <script>
+    const dogruSifre = "Melike2025HappyBday!";
+
+    function kontrolEt() {
+      const girilen = document.getElementById("passwordInput").value;
+      const hata = document.getElementById("error");
+      if (girilen === dogruSifre) {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("countdown").style.display = "block";
+        guncelleGeriSayim();
+        setInterval(guncelleGeriSayim, 1000);
+      } else {
+        hata.style.display = "block";
+      }
+    }
+
+    // 🎯 Geri sayım ayarı
+    const hedefTarih = new Date(2025, 8, 5, 0, 0, 0); // 5 Eylül 2025
+    const countdown = document.getElementById("countdown");
+    const message = document.getElementById("message");
+
+    function guncelleGeriSayim() {
+      const simdi = new Date();
+      const fark = hedefTarih - simdi;
+
+      if (fark <= 0) {
+        countdown.style.display = "none";
+        message.style.display = "block";
+        baslatKonfeti();
+        return;
+      }
+
+      const gun = Math.floor(fark / (1000 * 60 * 60 * 24));
+      const saat = Math.floor((fark / (1000 * 60 * 60)) % 24);
+      const dakika = Math.floor((fark / 1000 / 60) % 60);
+      const saniye = Math.floor((fark / 1000) % 60);
+
+      countdown.innerHTML = `🎂 ${gun} gün ${saat} saat ${dakika} dk ${saniye} sn kaldı 🎂`;
+    }
+
+    // 🎉 Konfeti animasyonu
+    function baslatKonfeti() {
+      const canvas = document.getElementById("confetti-canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const parcalar = [];
+
+      for (let i = 0; i < 150; i++) {
+        parcalar.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 6 + 4,
+          d: Math.random() * 20 + 10,
+          color: `hsl(${Math.random() * 360}, 100%, 75%)`,
+          tilt: Math.random() * 10 - 5,
+          tiltAngle: 0,
+          tiltAngleIncrement: Math.random() * 0.1
+        });
+      }
+
+      function ciz() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < parcalar.length; i++) {
+          const p = parcalar[i];
+          ctx.beginPath();
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x + p.tilt, p.y, p.r, p.r);
+        }
+        guncelle();
+      }
+
+      function guncelle() {
+        for (let i = 0; i < parcalar.length; i++) {
+          const p = parcalar[i];
+          p.y += Math.cos(p.d) + 1 + p.r / 2;
+          p.tiltAngle += p.tiltAngleIncrement;
+          p.tilt = Math.sin(p.tiltAngle) * 15;
+
+          if (p.y > canvas.height) {
+            p.y = -10;
+            p.x = Math.random() * canvas.width;
+          }
+        }
+      }
+
+      function animasyon() {
+        requestAnimationFrame(animasyon);
+        ciz();
+      }
+
+      animasyon();
+    }
+  </script>
+</body>
+</html>
